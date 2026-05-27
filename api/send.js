@@ -74,6 +74,21 @@ export default async function handler(req, res) {
             doc.fontSize(11).text(`・甲の報酬受取タイミング: ${data.payment_timing}`);
             doc.text(`・Divizeroへの精算サイクル: ${data.divizero_timing}`);
             doc.moveDown();
+
+            // Vercelの環境変数から銀行情報を取得（登録がない場合のセーフティ付き）
+            const bankName = process.env.BANK_NAME || '（未設定）';
+            const bankBranch = process.env.BANK_BRANCH || '（未設定）';
+            const bankType = process.env.BANK_ACCOUNT_TYPE || '普通';
+            const bankNumber = process.env.BANK_ACCOUNT_NUMBER || '（未設定）';
+            const bankAccountName = process.env.BANK_ACCOUNT_NAME || '（未設定）';
+
+            doc.fontSize(13).text(`【手数料のお振込先口座】`);
+            doc.fontSize(11).text(`・金融機関名: ${bankName}`);
+            doc.text(`・支店名: ${bankBranch}`);
+            doc.text(`・預金種目: ${bankType}`);
+            doc.text(`・口座番号: ${bankNumber}`);
+            doc.text(`・口座名義: ${bankAccountName}`);
+            doc.moveDown();
             doc.fontSize(13).text(`【不正成約に関する罰則規定】`);
             doc.fontSize(10).text(`万が一、成約が発生したにもかかわらず成約していないと虚偽の申告をされた場合、発覚時点での設定成約コミッション単価の10倍をDivizeroへお支払いいただきます。本規定はプラン合意時点で効力が生じます。`);
             doc.moveDown(2);
