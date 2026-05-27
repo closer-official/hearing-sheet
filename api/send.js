@@ -27,7 +27,7 @@ export default async function handler(req, res) {
                 // ※宛先（to）は薫之介さんの受信可能なアドレスに書き換えてください
                 const emailResponse = await resend.emails.send({
                     from: 'Divizero System <onboarding@resend.dev>', // 本番は独自ドメインに設定可能
-                    to: 'handtadanosuke@gmail.com', // 👈ここに運営代表メールアドレスを入れてください
+                    to: 'info@closer-official.com', // 👈ここに運営代表メールアドレスを入れてください
                     subject: `【要対応】契約書発行依頼_${data.name}様`,
                     html: `
                         <h2>Divizero パートナーシップ申請届</h2>
