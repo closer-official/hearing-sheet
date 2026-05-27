@@ -53,26 +53,29 @@ export default async function handler(req, res) {
             });
 
             // --- PDFのデザイン・中身の書き込み ---
-            doc.fontSize(20).text('Divizero Partnership Agreement', { align: 'center' });
+            // 日本語フォントを適用（文字化け対策）
+            doc.font('HeiseiMin-W3');
+
+            doc.fontSize(20).text('Divizero パートナーシッププラン合意書 (ドラフト)', { align: 'center' });
             doc.moveDown();
-            doc.fontSize(12).text(`申請日: ${new Date().toLocaleDateString('ja-JP')}`);
-            doc.text(`申請者（甲）: ${data.name}`);
+            doc.fontSize(11).text(`作成日: ${new Date().toLocaleDateString('ja-JP')}`);
+            doc.text(`申請者（甲）: ${data.name} 様`);
             doc.text(`運営者（乙）: Divizero 運営代表`);
             doc.moveDown();
-            doc.text('------------------------------------------------------------------');
+            doc.text('==================================================================');
             doc.moveDown();
-            doc.text(`【合意されたプランパラメータ】`);
-            doc.text(`・想定制作単価の目安: ${parseInt(data.price).toLocaleString()} 円`);
-            doc.text(`・確定アポ単価: ${parseInt(data.apo_fee).toLocaleString()} 円`);
-            doc.text(`・成約コミッション率: ${data.com_rate} %`);
-            doc.text(`・月間目標アポ件数: ${data.apo_count} 件`);
+            doc.fontSize(13).text(`【合意されたプランパラメータ】`);
+            doc.fontSize(11).text(`・想定制作単価の目安: ${parseInt(data.price).toLocaleString()} 円`);
+            doc.text(`--------- 希望アポ単価: ${parseInt(data.apo_fee).toLocaleString()} 円`);
+            doc.text(`--------- 成約コミッション率: ${data.com_rate} %`);
+            doc.text(`--------- 月間アポ件数: ${data.apo_count} 件`);
             doc.moveDown();
-            doc.text(`【入金・支払タイミング】`);
-            doc.text(`・クライアントへの入金: ${data.payment_timing}`);
-            doc.text(`・Divizeroへの支払い: ${data.divizero_timing}`);
+            doc.fontSize(13).text(`【入金・支払タイミング】`);
+            doc.fontSize(11).text(`・クライアントへの入金タイミング: ${data.payment_timing}`);
+            doc.text(`・Divizeroへの支払い発生タイミング: ${data.divizero_timing}`);
             doc.moveDown();
-            doc.text(`【不正成約に関する罰則規定】`);
-            doc.text(`万が一、成約が発生したにもかかわらず成約していないと虚偽の申告をされた場合、発覚時点での設定成約コミッション単価の10倍をDivizeroへお支払いいただきます。本規定はプラン合意時点で効力が生じます。`);
+            doc.fontSize(13).text(`【不正成約に関する罰則規定】`);
+            doc.fontSize(10).text(`万が一、成約が発生したにもかかわらず成約していないと虚偽の申告をされた場合、発覚時点での設定成約コミッション単価の10倍をDivizeroへお支払いいただきます。本規定はプラン合意時点で効力が生じます。`);
             doc.moveDown(2);
             doc.text('上記内容に基づき、乙から甲へGMOサインを通じて正式な電子契約書を締結します。', { color: 'gray' });
             
