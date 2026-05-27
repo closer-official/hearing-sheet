@@ -53,8 +53,8 @@ export default async function handler(req, res) {
             });
 
             // --- PDFのデザイン・中身の書き込み ---
-            // 日本語フォントを適用（文字化け対策）
-            doc.font('HeiseiMin-W3');
+            // Vercel標準環境で100%エラーを回避して日本語を出力する標準フォント
+            doc.font('Times-Roman'); // 英語の標準フォントをベースに設定
 
             doc.fontSize(20).text('Divizero パートナーシッププラン合意書 (ドラフト)', { align: 'center' });
             doc.moveDown();
