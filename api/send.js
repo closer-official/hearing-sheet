@@ -70,9 +70,9 @@ export default async function handler(req, res) {
             doc.text(`--------- 成約コミッション率: ${data.com_rate} %`);
             doc.text(`--------- 月間アポ件数: ${data.apo_count} 件`);
             doc.moveDown();
-            doc.fontSize(13).text(`【入金・支払タイミング】`);
-            doc.fontSize(11).text(`・クライアントへの入金タイミング: ${data.payment_timing}`);
-            doc.text(`・Divizeroへの支払い発生タイミング: ${data.divizero_timing}`);
+            doc.fontSize(13).text(`【報酬受取・手数料精算サイクル】`);
+            doc.fontSize(11).text(`・甲の報酬受取タイミング: ${data.payment_timing}`);
+            doc.text(`・Divizeroへの精算サイクル: ${data.divizero_timing}`);
             doc.moveDown();
             doc.fontSize(13).text(`【不正成約に関する罰則規定】`);
             doc.fontSize(10).text(`万が一、成約が発生したにもかかわらず成約していないと虚偽の申告をされた場合、発覚時点での設定成約コミッション単価の10倍をDivizeroへお支払いいただきます。本規定はプラン合意時点で効力が生じます。`);

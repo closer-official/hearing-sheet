@@ -538,19 +538,19 @@
         </div>
 
         <div class="form-group">
-            <label>クライアントへの入金タイミング <span class="required">*</span></label>
+            <label>あなたがエンドユーザー（顧客）から制作報酬を受け取るタイミングはいつですか？ <span class="required">*</span></label>
             <div class="radio-group">
-                <label class="radio-label"><input type="radio" name="payment_timing" value="制作開始時払い" checked> 制作開始時払い（制作開始時に全額振込）</label>
-                <label class="radio-label"><input type="radio" name="payment_timing" value="納品後払い"> 納品後払い（納品完了後に全額振込）</label>
-                <label class="radio-label"><input type="radio" name="payment_timing" value="分割払い"> 分割払い（制作開始時50% + 納品後50%）</label>
+                <label class="radio-label"><input type="radio" name="payment_timing" value="着手時全額払い" checked> 着手時全額払い（制作開始前に全額受領）</label>
+                <label class="radio-label"><input type="radio" name="payment_timing" value="納品後全額払い"> 納品後全額払い（納品完了後に全額受領）</label>
+                <label class="radio-label"><input type="radio" name="payment_timing" value="分割払い（着手金＋中間金・納品後など）"> 分割払い（着手金＋納品後など、複数回に分ける場合）</label>
             </div>
         </div>
 
         <div class="form-group">
-            <label>Divizeroへの支払い発生タイミング <span class="required">*</span></label>
+            <label>Divizeroへの手数料支払い（精算サイクル）の希望選択 <span class="required">*</span></label>
             <div class="radio-group">
-                <label class="radio-label"><input type="radio" name="divizero_timing" value="アポ確定時に発生" checked> アポ確定時に発生（判定基準を満たした翌営業日）</label>
-                <label class="radio-label"><input type="radio" name="divizero_timing" value="成約時に発生"> 成約時に発生（クライアント入金直後）</label>
+                <label class="radio-label"><input type="radio" name="divizero_timing" value="20日締め同月末支払い" checked> 20日締め同月末支払い</label>
+                <label class="radio-label"><input type="radio" name="divizero_timing" value="月末締め翌月10日支払い"> 月末締め翌月10日支払い</label>
             </div>
         </div>
 
