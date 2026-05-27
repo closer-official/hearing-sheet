@@ -356,7 +356,7 @@
         
         <div class="form-group">
             <label for="name">お名前 <span class="required">*</span></label>
-            <input type="text" id="name" required placeholder="山田 薫之介">
+            <input type="text" id="name" required placeholder="山田 太郎">
         </div>
 
         <div class="form-group">
@@ -381,7 +381,7 @@
 
         <div class="form-group">
             <label for="max_cases">対応可能な案件数/月 <span class="required">*</span></label>
-            <input type="number" id="max_cases" required min="1" placeholder="5">
+            <input type="number" id="max_cases" required min="1" placeholder="5" oninput="updateSimulator()">
         </div>
 
         <div class="section-title">ターゲット設定</div>
@@ -551,11 +551,31 @@
             document.getElementById('base_price_input').value = price;
         }
 
-        // 表示ラベルの更新
+        // 「対応可能な案件数」と「成約率」から月間アポ件数の上限（max）を動的に計算
+        const maxCasesInput = parseInt(document.getElementById('max_cases').value) || 1;
+        const apoSlider = document.getElementById('param_apo_count');
+        
+        if (closeRate > 0) {
+            // 例: 5件 ÷ 20% (0.2) = 25件
+            const calculatedMaxApo = Math.ceil(maxCasesInput / closeRate);
+            apoSlider.max = calculatedMaxApo;
+        } else {
+            apoSlider.max = 100; // 成約率0%の時は安全のため上限100
+        }
+
+        // スライダーの値が新しく設定された最大値を超えてしまっていたら、最大値に強制補正
+        if (parseInt(apoSlider.value) > parseInt(apoSlider.max)) {
+            apoSlider.value = apoSlider.max;
+        }
+        
+        // 補正後の正確なアポ数を再取得
+        const finalApoCount = parseInt(apoSlider.value);
+
+        // 表示ラベルの更新（動的な最大値もカッコ内に表示させて親切にしています）
         document.getElementById('val_price').innerText = price.toLocaleString() + '円';
         document.getElementById('val_apo_fee').innerText = apoFee.toLocaleString() + '円';
         document.getElementById('val_com_rate').innerText = (comRate * 100).toFixed(0) + '%';
-        document.getElementById('val_apo_count').innerText = apoCount + '件';
+        document.getElementById('val_apo_count').innerText = finalApoCount + '件' + ` (上限 ${apoSlider.max}件)`;
         document.getElementById('val_close_rate').innerText = (closeRate * 100).toFixed(0) + '%';
 
         // 判定ロジック: アポ単価 ＋ 1件あたりの成約報酬
