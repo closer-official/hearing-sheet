@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divizero パートナープラン策定・ヒアリングシート</title>
+    <style>
+        :root {
+            --bg-color: #0b0b0b;
+            --card-bg: #141414;
+            --accent-gold: #d4af37;
+            --accent-gold-hover: #f3e5ab;
+            --text-main: #ffffff;
+            --text-sub: #999999;
+            --border-color: #262626;
+            --error-color: #ff4d4d;
+            --success-color: #2ed573;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        header h1 {
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--text-main);
+            margin-bottom: 12px;
+        }
+
+        header p {
+            color: var(--text-sub);
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        form {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 45px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--accent-gold);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin: 40px 0 25px 0;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 28px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #dddddd;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group label .required {
+            color: var(--error-color);
+            margin-left: 6px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            background-color: #0d0d0d;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px 16px;
+            color: var(--text-main);
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+        }
+
+        textarea {
+            height: 110px;
+            resize: vertical;
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 10px;
+        }
+
+        .radio-label, .checkbox-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 13px;
+            color: #cccccc;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        input[type="radio"], input[type="checkbox"] {
+            accent-color: var(--accent-gold);
+            width: 16px;
+            height: 16px;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        /* 一体型シミュレーター */
+        .simulator-box {
+            background-color: #0d0d0d;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .slider-container {
+            margin-bottom: 28px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .slider-title {
+            font-size: 13px;
+            color: #dddddd;
+            font-weight: 500;
+        }
+
+        .slider-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--accent-gold);
+            font-family: 'Times New Roman', serif;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            background: #222222;
+            border-radius: 2px;
+            outline: none;
+            accent-color: var(--accent-gold);
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* 試算結果表示パネル */
+        .results-panel {
+            background-color: #121212;
+            border: 1px solid #1f1f1f;
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .results-title {
+            font-size: 13px;
+            color: var(--accent-gold);
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+            text-transform: uppercase;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .result-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-size: 13px;
+            color: #aaaaaa;
+        }
+
+        .result-val {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .result-val.minus {
+            color: #e55039;
+        }
+
+        .result-val.highlight {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--accent-gold);
+            font-family: 'Times New Roman', serif;
+        }
+
+        /* 5000円制限のバリデーション通知表示 */
+        .validation-notice {
+            background-color: rgba(229, 80, 57, 0.08);
+            border: 1px solid var(--error-color);
+            color: var(--error-color);
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .validation-success {
+            background-color: rgba(46, 213, 115, 0.08);
+            border: 1px solid var(--success-color);
+            color: var(--success-color);
+            padding: 14px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 20px;
+            display: block;
+        }
+
+        .note-text {
+            font-size: 11px;
+            color: #666666;
+            margin-top: 15px;
+            line-height: 1.6;
+        }
+
+        /* ボタン構成 */
+        .btn-container {
+            display: flex;
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        button {
+            flex: 1;
+            padding: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: #aaaaaa;
+        }
+
+        .btn-secondary:hover {
+            border-color: #555555;
+            color: var(--text-main);
+        }
+
+        .btn-primary {
+            background-color: var(--accent-gold);
+            border: none;
+            color: #000000;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-gold-hover);
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+        }
+
+        button:disabled {
+            background-color: #222222 !important;
+            color: #555555 !important;
+            cursor: not-allowed;
+            box-shadow: none !important;
+            border: none !important;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 11px;
+            color: #444444;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Divizero プラン策定・ヒアリングシート</h1>
+        <p>必要事項をご入力ください。内容は「Divizero運営代表メール」へ安全に送信されます。</p>
+    </header>
+
+    <form id="hearingForm" onsubmit="handleSubmit(event)">
+        
+        <div class="section-title">基本情報</div>
+        
+        <div class="form-group">
+            <label for="name">お名前 <span class="required">*</span></label>
+            <input type="text" id="name" required placeholder="山田 薫之介">
+        </div>
+
+        <div class="form-group">
+            <label for="email">メールアドレス <span class="required">*</span></label>
+            <input type="email" id="email" required placeholder="example@divizero.jp">
+        </div>
+
+        <div class="form-group">
+            <label for="insta_url">インスタURL <span class="required">*</span></label>
+            <input type="text" id="insta_url" required placeholder="https://instagram.com/username">
+        </div>
+
+        <div class="form-group">
+            <label for="genre">得意ジャンル・制作スタイル <span class="required">*</span></label>
+            <input type="text" id="genre" required placeholder="例：サイバー・ダーク系デザイン、売上特化型LPなど">
+        </div>
+
+        <div class="form-group">
+            <label for="base_price_input">制作単価の目安（基本設定） <span class="required">*</span></label>
+            <input type="number" id="base_price_input" required min="0" placeholder="100000" oninput="syncInputToSlider(this.value)">
+        </div>
+
+        <div class="form-group">
+            <label for="max_cases">対応可能な案件数/月 <span class="required">*</span></label>
+            <input type="number" id="max_cases" required min="1" placeholder="5">
+        </div>
+
+        <div class="section-title">ターゲット設定</div>
+
+        <div class="form-group">
+            <label for="ideal_client">理想のクライアント像 <span class="required">*</span></label>
+            <textarea id="ideal_client" required placeholder="例：意思決定がスピーディで、クリエイティブを信頼して丸投げしてくれる経営者"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="avoid_client">避けたい案件・クライアント <span class="required">*</span></label>
+            <textarea id="avoid_client" required placeholder="例：過度な相見積もり、リスペクトのない値引き要求をされるクライアント"></textarea>
+        </div>
+
+        <div class="section-title">料金プラン設定 ＆ 収支シミュレーター</div>
+        
+        <div class="simulator-box">
+            
+            <div class="slider-container">
+                <div class="slider-header">
+                    <span class="slider-title">制作単価の目安（シミュレーション連動）</span>
+                    <span id="val_price" class="slider-value">100,000円</span>
+                </div>
+                <input type="range" id="param_price" min="10000" max="500000" step="5000" value="100000" oninput="updateSimulator('slider')">
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-header">
+                    <span class="slider-title">アポ単価設定</span>
+                    <span id="val_apo_fee" class="slider-value">2,000円</span>
+                </div>
+                <input type="range" id="param_apo_fee" min="0" max="30000" step="500" value="2000" oninput="updateSimulator()">
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-header">
+                    <span class="slider-title">成約コミッション率</span>
+                    <span id="val_com_rate" class="slider-value">10%</span>
+                </div>
+                <input type="range" id="param_com_rate" min="0" max="50" step="1" value="10" oninput="updateSimulator()">
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-header">
+                    <span class="slider-title">月間アポ件数</span>
+                    <span id="val_apo_count" class="slider-value">10件</span>
+                </div>
+                <input type="range" id="param_apo_count" min="1" max="100" step="1" value="10" oninput="updateSimulator()">
+            </div>
+
+            <div class="slider-container">
+                <div class="slider-header">
+                    <span class="slider-title">成約率</span>
+                    <span id="val_close_rate" class="slider-value">30%</span>
+                </div>
+                <input type="range" id="param_close_rate" min="0" max="100" step="5" value="30" oninput="updateSimulator()">
+            </div>
+
+            <div id="validationNotice" class="validation-notice">
+                ⚠️ 【設定エラー】「アポ単価 ＋ 1件あたりの成約コミッション金額」の合計が 5,000円 未満となるプラン設計では、次に進む（送信する）ことができません。数値を調整してください。
+            </div>
+            <div id="validationSuccess" class="validation-success">
+                ✅ 最低手数料基準（合計5,000円以上）をクリアしています。
+            </div>
+
+            <div class="results-panel">
+                <div class="results-title">収支シミュレーション結果</div>
+                
+                <div class="result-row">
+                    <span class="result-label">成約件数 (自動計算)</span>
+                    <span id="res_close_count" class="result-val">3 件</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">アポ収入 (総売上ベース)</span>
+                    <span id="res_apo_revenue" class="result-val">¥20,000</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">成約コミッション (Divizero受取分)</span>
+                    <span id="res_com_revenue" class="result-val">¥30,000</span>
+                </div>
+
+                <div class="result-row">
+                    <span class="result-label">月間合計収入 (Divizero受取分総額)</span>
+                    <span id="res_divizero_total" class="result-val minus" style="font-weight: bold; color: var(--error-color);">¥50,000</span>
+                </div>
+
+                <div class="result-row" style="margin-top: 8px; padding-top: 14px; border-top: 1px dashed var(--border-color);">
+                    <span class="result-label" style="color: var(--accent-gold); font-weight: bold;">クライアント手残り (実質利益)</span>
+                    <span id="res_client_remains" class="result-val highlight">¥250,000</span>
+                </div>
+                
+                <p class="note-text">
+                    ※ 成約率はクライアント（制作者）の対応・提案力によって決まるものであり、Divizeroが保証するものではありません。Divizeroの役割は見込み客をクライアントのDMへお連れするところまでです。
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="agree_plan" required>
+                    <span>このプランは毎月変更可能であることに同意します（必須）</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>クライアントへの入金タイミング <span class="required">*</span></label>
+            <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="payment_timing" value="制作開始時払い" checked> 制作開始時払い（制作開始時に全額振込）</label>
+                <label class="radio-label"><input type="radio" name="payment_timing" value="納品後払い"> 納品後払い（納品完了後に全額振込）</label>
+                <label class="radio-label"><input type="radio" name="payment_timing" value="分割払い"> 分割払い（制作開始時50% + 納品後50%）</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Divizeroへの支払い発生タイミング <span class="required">*</span></label>
+            <div class="radio-group">
+                <label class="radio-label"><input type="radio" name="divizero_timing" value="アポ確定時に発生" checked> アポ確定時に発生（判定基準を満たした翌営業日）</label>
+                <label class="radio-label"><input type="radio" name="divizero_timing" value="成約時に発生"> 成約時に発生（クライアント入金直後）</label>
+            </div>
+        </div>
+
+        <div class="section-title">Section 3｜不正成約の罰則規定</div>
+        <div style="background-color: rgba(255, 77, 77, 0.03); border: 1px solid #331515; padding: 20px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #e6aaaa; line-height: 1.6;">
+            万が一、成約が発生したにもかかわらず成約していないと虚偽の申告をされた場合、発覚時点での設定成約コミッション単価の10倍をDivizeroへお支払いいただきます。本規定はプラン合意時点で効力が生じます。
+        </div>
+
+        <div class="form-group">
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="agree_penalty" required>
+                    <span>上記罰則規定に同意します（必須）</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="btn-container">
+            <button type="button" class="btn-secondary" onclick="copyPlanToClipboard()">プランをコピーする</button>
+            <button type="submit" id="submitBtn" class="btn-primary">ヒアリングシートを送信する</button>
+        </div>
+    </form>
+    <div class="footer-note">© Divizero All Rights Reserved.</div>
+</div>
+
+<script>
+    // 制作単価入力欄とシミュレータースライダーの完全同期
+    function syncInputToSlider(val) {
+        let num = parseInt(val);
+        if(!isNaN(num)) {
+            document.getElementById('param_price').value = num;
+            updateSimulator('input');
+        }
+    }
+
+    function updateSimulator(trigger) {
+        const price = parseInt(document.getElementById('param_price').value);
+        const apoFee = parseInt(document.getElementById('param_apo_fee').value);
+        const comRate = parseInt(document.getElementById('param_com_rate').value) / 100;
+        const apoCount = parseInt(document.getElementById('param_apo_count').value);
+        const closeRate = parseInt(document.getElementById('param_close_rate').value) / 100;
+
+        // 入力フォーム側の数値を同期
+        if (trigger !== 'input') {
+            document.getElementById('base_price_input').value = price;
+        }
+
+        // 表示ラベルの更新
+        document.getElementById('val_price').innerText = price.toLocaleString() + '円';
+        document.getElementById('val_apo_fee').innerText = apoFee.toLocaleString() + '円';
+        document.getElementById('val_com_rate').innerText = (comRate * 100).toFixed(0) + '%';
+        document.getElementById('val_apo_count').innerText = apoCount + '件';
+        document.getElementById('val_close_rate').innerText = (closeRate * 100).toFixed(0) + '%';
+
+        // 判定ロジック: アポ単価 ＋ 1件あたりの成約報酬
+        const singleComFee = price * comRate; 
+        const feePerCase = apoFee + singleComFee;
+
+        const submitBtn = document.getElementById('submitBtn');
+        const notice = document.getElementById('validationNotice');
+        const success = document.getElementById('validationSuccess');
+
+        if (feePerCase < 5000) {
+            notice.style.display = 'block';
+            success.style.display = 'none';
+            submitBtn.disabled = true;
+        } else {
+            notice.style.display = 'none';
+            success.style.display = 'block';
+            submitBtn.disabled = false;
+        }
+
+        // 収支の精密計算
+        const closeCount = apoCount * closeRate; // 成約件数
+        const apoRevenue = apoFee * apoCount; // アポ総報酬
+        const comRevenue = singleComFee * closeCount; // コミッション総報酬
+        
+        const divizeroTotal = apoRevenue + comRevenue; // Divizero受取総額
+        const totalSales = price * closeCount; // 総売上高
+        const clientRemains = totalSales - divizeroTotal; // クライアント手残り
+
+        // 画面へのレンダリング
+        document.getElementById('res_close_count').innerText = `${apoCount} × ${(closeRate * 100).toFixed(0)}% = ${closeCount.toFixed(1)} 件`;
+        document.getElementById('res_apo_revenue').innerText = '¥' + Math.round(apoRevenue).toLocaleString();
+        document.getElementById('res_com_revenue').innerText = '¥' + Math.round(comRevenue).toLocaleString();
+        document.getElementById('res_divizero_total').innerText = '¥' + Math.round(divizeroTotal).toLocaleString();
+        document.getElementById('res_client_remains').innerText = '¥' + Math.round(clientRemains).toLocaleString();
+    }
+
+    function copyPlanToClipboard() {
+        const price = document.getElementById('param_price').value;
+        const apoFee = document.getElementById('param_apo_fee').value;
+        const comRate = document.getElementById('param_com_rate').value;
+        
+        const text = `【Divizero 策定プラン構成】\n■ 制作単価目安: ¥${parseInt(price).toLocaleString()}\n■ 希望アポ単価: ¥${parseInt(apoFee).toLocaleString()}\n■ 希望成約コミッション率: ${comRate}%`;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            alert('プラン構成をクリップボードにコピーしました。');
+        }).catch(() => {
+            alert('コピーに失敗しました。');
+        });
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        // サーバーサイドAPI（Vercelサーバーレス関数等）と接続するフロントエンド側の送信完了演出です
+        alert('ヒアリングシートのデータが「Divizero運営代表メール」へ送信されました。');
+    }
+
+    window.onload = function() {
+        updateSimulator();
+    };
+</script>
+</body>
+</html>
