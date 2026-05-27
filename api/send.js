@@ -73,6 +73,11 @@ export default async function handler(req, res) {
             doc.fontSize(13).text(`【報酬受取・手数料精算サイクル】`);
             doc.fontSize(11).text(`・甲の報酬受取タイミング: ${data.payment_timing}`);
             doc.text(`・Divizeroへの精算サイクル: ${data.divizero_timing}`);
+            
+            // 即時支払いが選ばれている場合、割引に関する特記をPDFに自動挿入
+            if (data.divizero_timing.includes('即座に')) {
+                doc.fillColor('#e55039').text(`※特記事項: 即時精算合意につき、各手数料精算時に毎回200円の割引が適用されます。`).fillColor('#ffffff');
+            }
             doc.moveDown();
 
             // Vercelの環境変数から銀行情報を取得（登録がない場合のセーフティ付き）
