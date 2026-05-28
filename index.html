@@ -415,6 +415,26 @@
             opacity: 1;
         }
 
+        /* 適用ルール用の追加スタイル */
+        .modal-card h4 {
+            color: var(--accent-gold);
+            font-size: 15px;
+            margin: 15px 0 6px 0;
+            border-bottom: 1px solid #2a2a2a;
+            padding-bottom: 4px;
+        }
+        .modal-card h4:first-of-type {
+            margin-top: 0;
+        }
+        .modal-card ul, .modal-card ol {
+            padding-left: 18px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        .modal-card li {
+            margin-bottom: 4px;
+        }
+
         .readonly-value {
             width: 100%;
             background-color: #0d0d0d;
@@ -817,17 +837,38 @@
 </div>
 
 <div id="commissionHelpModal" class="modal-overlay" onclick="closeCommissionHelp(event)">
-    <div class="modal-card">
-        <h3>成約コミッション率について</h3>
-        <p>成約時に「制作単価 × コミッション率」が報酬として追加で支給されます。
-アポ単価は相殺（差し引き）されず、そのまま合算されます。
+    <div class="modal-card" style="max-height: 90vh; overflow-y: auto;">
+        <h3>【単価・コミッション率の適用ルール】</h3>
+        
+        <h4>■ 初期2ヶ月間（お試し期間）</h4>
+        <p style="font-size: 13px; margin-bottom: 6px;">初期導入の特別割引として、低コストでお試しいただけます。</p>
+        <ul>
+            <li>アポ単価：最低 <strong>0円〜</strong></li>
+            <li>成約コミッション：最低 <strong>0%〜</strong></li>
+            <li>総コミッション：最低 <strong>5,000円〜</strong></li>
+        </ul>
 
-【計算例】
-アポ単価 5,000円、制作単価 10万円、コミッション率 10% の場合：
+        <h4>■ 3ヶ月目以降（契約更新時）</h4>
+        <p style="font-size: 13px; margin-bottom: 6px;">契約更新のタイミングに合わせ、以下の適正価格への見直し・値上げが適用されます。</p>
+        <ul>
+            <li>アポ単価：最低 <strong>2,000円〜</strong></li>
+            <li>成約コミッション：最低 <strong>10%〜</strong></li>
+            <li>総コミッション：最低 <strong>15,000円〜</strong></li>
+        </ul>
 
-アポ報酬：5,000円
-成約報酬：10,000円（10万円 × 10%）
-合計報酬：15,000円</p>
+        <h4>■ 契約更新のフロー</h4>
+        <ol>
+            <li>初期2ヶ月間の稼働状況・成果を確認。</li>
+            <li>2ヶ月目終了のタイミングで、継続のご意向を確認。</li>
+            <li>継続の場合、実際の成果データをもとに3ヶ月目以降の条件（単価・コミッション率）を双方合意の上で再設定。</li>
+            <li>新たな条件にて契約書を再発行・締結し、3ヶ月目以降の稼働へと移行します。</li>
+        </ol>
+        
+        <p style="font-size: 11px; color: #888888; margin-top: 10px; border-top: 1px solid #2a2a2a; padding-top: 8px;">
+            ※お試し期間のみ（2ヶ月）での終了も可能です。<br>
+            ※現在のシミュレーターは「お試し期間」の数値を基準にしています。3ヶ月目以降のシミュレーションを行いたい場合は、各スライダーを上記最低値以上に調整してご確認ください。
+        </p>
+        
         <button type="button" class="modal-close" onclick="closeCommissionHelp()">閉じる</button>
     </div>
 </div>
