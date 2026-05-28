@@ -181,27 +181,54 @@
 
         input[type="range"] {
             width: 100%;
-            height: 4px;
-            background: #222222;
+            height: 28px;
+            background: transparent;
             border-radius: 2px;
             outline: none;
             accent-color: var(--accent-gold);
             -webkit-appearance: none;
+            appearance: none;
+            touch-action: pan-y;
+        }
+
+        input[type="range"]::-webkit-slider-runnable-track {
+            height: 8px;
+            background: #2a2a2a;
+            border-radius: 999px;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 18px;
-            height: 18px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             background: var(--accent-gold);
+            border: 2px solid #111111;
+            box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.18);
             cursor: pointer;
             transition: transform 0.1s;
+            margin-top: -10px;
         }
 
         input[type="range"]::-webkit-slider-thumb:hover {
             transform: scale(1.2);
+        }
+
+        input[type="range"]::-moz-range-track {
+            height: 8px;
+            background: #2a2a2a;
+            border-radius: 999px;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border: 2px solid #111111;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.18);
+            cursor: pointer;
         }
 
         /* 試算結果表示パネル */
@@ -407,6 +434,7 @@
             .container {
                 max-width: 100%;
                 margin: 0;
+                width: 100%;
             }
 
             header {
@@ -429,6 +457,7 @@
                 border-radius: 0;
                 box-shadow: none;
                 padding: 18px 14px 28px;
+                width: 100%;
             }
 
             .section-title {
@@ -448,6 +477,10 @@
 
             .slider-container {
                 margin-bottom: 20px;
+                padding: 10px 8px 8px;
+                border: 1px solid #222;
+                border-radius: 10px;
+                background-color: #111;
             }
 
             .slider-header {
@@ -473,8 +506,8 @@
             }
 
             .result-row {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction: column !important;
+                align-items: flex-start !important;
                 gap: 6px;
                 padding: 12px 0;
             }
@@ -492,6 +525,29 @@
             .result-val.highlight {
                 font-size: 30px;
                 line-height: 1.1;
+            }
+
+            input[type="range"] {
+                height: 38px;
+            }
+
+            input[type="range"]::-webkit-slider-runnable-track {
+                height: 10px;
+            }
+
+            input[type="range"]::-webkit-slider-thumb {
+                width: 34px;
+                height: 34px;
+                margin-top: -12px;
+            }
+
+            input[type="range"]::-moz-range-track {
+                height: 10px;
+            }
+
+            input[type="range"]::-moz-range-thumb {
+                width: 34px;
+                height: 34px;
             }
 
             .note-text {
@@ -679,7 +735,7 @@
         </div>
         <div class="form-group">
             <label for="cancel_notice_days">中途解約の通知期限（日数または「いつでも」） <span class="required">*</span></label>
-            <input type="text" id="cancel_notice_days" required value="いつでも">
+            <input type="text" id="cancel_notice_days" required value="7">
         </div>
         <div class="form-group">
             <label for="jurisdiction">専属的合意管轄裁判所 <span class="required">*</span></label>

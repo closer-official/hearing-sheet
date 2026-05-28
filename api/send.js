@@ -62,7 +62,7 @@ export default async function handler(req, res) {
         const contractId = safeText(data.contract_id, createContractId());
         const liabilityCapMonths = safeText(data.liability_cap_months, '3');
         const autoRenewNoticeDays = safeText(data.auto_renew_notice_days, '7');
-        const cancelNoticeDays = safeText(data.cancel_notice_days, 'いつでも');
+        const cancelNoticeDays = safeText(data.cancel_notice_days, '7');
         const jurisdiction = safeText(data.jurisdiction, '乙の所在地を管轄する地方裁判所（または簡易裁判所）');
         const products = normalizeProducts(data.products, {
             name: safeText(data.product_name, 'メイン商材'),
@@ -137,7 +137,7 @@ export default async function handler(req, res) {
             doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor('#d0d0d0').stroke();
             doc.moveDown(1);
 
-            doc.fontSize(13).fillColor('#111111').text('第1章 合意された商材別パラメータ');
+            doc.fontSize(13).fillColor('#111111').text('第1条（合意された商材別パラメータ）');
             doc.moveDown(0.6);
             doc.fontSize(10);
             products.forEach((product, idx) => {
@@ -157,16 +157,14 @@ export default async function handler(req, res) {
             });
 
             doc.moveDown(0.5);
-            doc.fontSize(13).fillColor('#111111').text('第2章 基本規定');
-            doc.moveDown(0.4);
             doc.fontSize(9).fillColor('#333333');
-            doc.text('第1条（アポ確定基準）');
+            doc.text('第2条（アポ確定基準）');
             doc.fontSize(9).text('1. 事前のヒアリング内容に基づき、ターゲット条件（業種、ニーズ等）を網羅していること。');
-            doc.text('2. 甲（パートナー）のInstagramアカウント等の指定窓口へ見込み客が直接流入した時点を発生とする。');
+            doc.text('2. 見込み客が、甲（パートナー）のInstagramアカウント等のダイレクトメッセージ（DM）へ、直接問い合わせのメッセージを送信した時点をもって、アポの「受付開始」とみなします。');
             doc.text('3. 流入後、明らかな冷やかしを除き、最初のヒアリング対話が1往復以上成立した時点をもってアポ確定（成果発生）と認定する。');
             doc.text('※乙の役割は見込み客を甲のDMへお連れするところまでであり、その後の成約率は甲の提案力に依存します。');
             doc.moveDown();
-            doc.fontSize(9).text('第2条（報酬受取・手数料精算サイクル）');
+            doc.fontSize(9).text('第3条（報酬受取・手数料精算サイクル）');
             doc.text(`・甲の報酬受取タイミング: ${safeText(data.payment_timing)}`);
             doc.text(`・Divizeroへの精算サイクル: ${safeText(data.divizero_timing)}`);
             if (safeText(data.divizero_timing).includes('即座に')) {
@@ -175,31 +173,31 @@ export default async function handler(req, res) {
             doc.fillColor('#333333');
             doc.moveDown(0.5);
 
-            doc.text('第3条（不正成約に関する罰則）');
-            doc.text('万が一、成約が発生したにもかかわらず成約していないと虚偽の申告をされた場合、発覚時点での設定成約コミッション単価の10倍を乙へ支払うものとします。');
+            doc.text('第4条（不正成約に関する罰則）');
+            doc.text('万が一、成約が発生したにもかかわらず成約していないと虚偽の申告をされた場合、発覚時点での設定成約コミッション単価の10倍を、甲は乙へ支払うものとします。');
             doc.moveDown(0.5);
 
-            doc.text('第4条（反社会的勢力の排除）');
+            doc.text('第5条（反社会的勢力の排除）');
             doc.text('甲および乙は、自らが反社会的勢力に該当しないこと、かつ将来にわたっても関係を持たないことを表明し、保証します。違反時は相手方は催告なしに直ちに契約を解除できます。');
             doc.moveDown(0.5);
 
-            doc.text('第5条（有効期間および自動更新）');
+            doc.text('第6条（有効期間および自動更新）');
             doc.text(`本合意の有効期間は締結日から1ヶ月間とします。ただし、期間満了の${autoRenewNoticeDays}日前までに双方から別段の申し出がない限り、同条件でさらに1ヶ月間自動更新され、以後も同様とします。`);
             doc.moveDown(0.5);
 
-            doc.text('第6条（中途解約の自由）');
-            doc.text(`甲および乙は、有効期間内であっても、相手方に対して${cancelNoticeDays === 'いつでも' ? 'いつでも' : `${cancelNoticeDays}日前に`}通知を行うことで、何らの費用、違約金、解約金等の支払いを要することなく本契約を終了できます。`);
+            doc.text('第7条（中途解約の自由）');
+            doc.text(`甲および乙は、有効期間内であっても、相手方に対して${cancelNoticeDays === 'いつでも' ? 'いつでも' : `${cancelNoticeDays}日前までに`}通知を行うことで、何らの費用、違約金、解約金等の支払いを要することなく本契約を終了できます。`);
             doc.moveDown(0.5);
 
-            doc.text('第7条（成果保証の免責）');
+            doc.text('第8条（成果保証の免責）');
             doc.text('乙はアポ獲得およびマーケティング支援に最善を尽くしますが、成果そのものを保証するものではありません。目標未達または0件の場合でも、乙は補償・損害賠償・返金その他これらに類する責任を負わないものとします。');
             doc.moveDown(0.5);
 
-            doc.text('第8条（損害賠償の上限）');
+            doc.text('第9条（損害賠償の上限）');
             doc.text(`本契約に関連して乙が甲に対して負う損害賠償責任は、事由の如何を問わず、過去${liabilityCapMonths}ヶ月間に甲が乙へ現実に支払った手数料総額を上限とします（手数料支払前は0円）。`);
             doc.moveDown(0.5);
 
-            doc.text('第9条（専属的合意管轄）');
+            doc.text('第10条（専属的合意管轄）');
             doc.text(`本契約に関する一切の紛争は、${jurisdiction}を第一審の専属的合意管轄裁判所とします。`);
             doc.moveDown();
 
@@ -209,7 +207,9 @@ export default async function handler(req, res) {
             const bankNumber = process.env.BANK_ACCOUNT_NUMBER || '（未設定）';
             const bankAccountName = process.env.BANK_ACCOUNT_NAME || '（未設定）';
 
-            doc.fontSize(12).fillColor('#111111').text('手数料のお振込先口座');
+            doc.fontSize(9).fillColor('#333333').text('第11条（手数料のお振込先口座）');
+            doc.moveDown(0.3);
+            doc.fontSize(10).fillColor('#333333');
             doc.fontSize(10).fillColor('#333333').text(`・金融機関名: ${bankName}`);
             doc.text(`・支店名: ${bankBranch}`);
             doc.text(`・預金種目: ${bankType}`);
