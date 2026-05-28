@@ -6,7 +6,7 @@ import path from 'node:path';
 
 // Vercel上の環境変数からResendのAPIキーを読み込みます
 const resend = new Resend(process.env.RESEND_API_KEY);
-const JAPANESE_FONT_PATH = path.resolve(process.cwd(), 'fonts', 'NotoSansCJKjp-Regular.otf');
+const JAPANESE_FONT_FILE = 'NotoSansCJKjp-Regular.otf';
 
 function toNumber(value, fallback = 0) {
     const n = Number(value);
@@ -39,6 +39,19 @@ function safeText(value, fallback = '未入力') {
     return s.length ? s : fallback;
 }
 
+function resolveJapaneseFontPath() {
+    const candidates = [
+        path.resolve(process.cwd(), 'fonts', JAPANESE_FONT_FILE),
+        path.resolve('/var/task', 'fonts', JAPANESE_FONT_FILE),
+        path.resolve(path.dirname(process.cwd()), 'fonts', JAPANESE_FONT_FILE),
+    ];
+    const resolved = candidates.find((fontPath) => existsSync(fontPath));
+    if (!resolved) {
+        throw new Error(`Japanese font file not found. checked: ${candidates.join(', ')}`);
+    }
+    return resolved;
+}
+
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
@@ -60,8 +73,10 @@ export default async function handler(req, res) {
             close_rate: toNumber(data.close_rate),
         });
 
+        const japaneseFontPath = resolveJapaneseFontPath();
+
         // 1. メモリ上でPDF契約書（暫定）を生成
-        const doc = new PDFDocument({ margin: 50 });
+        const doc = new PDFDocument({ margin: 50, font: japaneseFontPath });
         let buffers = [];
         doc.on('data', buffers.push.bind(buffers));
         
@@ -98,12 +113,9 @@ export default async function handler(req, res) {
                 resolve();
             });
 
-            if (!existsSync(JAPANESE_FONT_PATH)) {
-                throw new Error(`Japanese font file not found: ${JAPANESE_FONT_PATH}`);
-            }
-
-            // 同梱フォントを明示的に指定して日本語の文字化けを防止
-            doc.font(JAPANESE_FONT_PATH);
+            // 同梱フォントを既定フォントとして登録・固定し、環境依存フォント参照を防止
+            doc.registerFont('jp', japaneseFontPath);
+            doc.font('jp');
             doc.info.Title = `Divizero契約書ドラフト_${contractId}`;
             doc.info.Author = 'Divizero';
             doc.info.Subject = 'パートナーシップ契約書ドラフト';
