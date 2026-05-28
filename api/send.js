@@ -87,6 +87,8 @@ export default async function handler(req, res) {
                         <p>ヒアリングシートより新しい送信がありました。内容を確認し、GMOサインにて署名手続きを進めてください。</p>
                         <hr />
                         <p><strong>お名前:</strong> ${safeText(data.name)}</p>
+                        <p><strong>メールアドレス:</strong> ${safeText(data.email)}</p>
+                        <p><strong>Instagramアカウント / URL:</strong> ${safeText(data.instagram)}</p>
                         <p><strong>商材数:</strong> ${products.length}件</p>
                         <hr />
                         <p>※詳細な回答内容は添付のPDF契約書をご確認ください。</p>
