@@ -2,11 +2,11 @@
 import { Resend } from 'resend';
 import PDFDocument from 'pdfkit';
 import { existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
 // Vercel上の環境変数からResendのAPIキーを読み込みます
 const resend = new Resend(process.env.RESEND_API_KEY);
-const JAPANESE_FONT_PATH = fileURLToPath(new URL('../fonts/NotoSansCJKjp-Regular.otf', import.meta.url));
+const JAPANESE_FONT_PATH = path.resolve(process.cwd(), 'fonts', 'NotoSansCJKjp-Regular.otf');
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
