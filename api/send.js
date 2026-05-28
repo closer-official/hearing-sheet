@@ -89,7 +89,7 @@ export default async function handler(req, res) {
                         <p><strong>お名前:</strong> ${safeText(data.name)}</p>
                         <p><strong>商材数:</strong> ${products.length}件</p>
                         <hr />
-                        <p>※詳細な回答内容は添付のPDF契約書（ドラフト）をご確認ください。</p>
+                        <p>※詳細な回答内容は添付のPDF契約書をご確認ください。</p>
                     `,
                     attachments: [
                         {
@@ -106,15 +106,15 @@ export default async function handler(req, res) {
             // 同梱フォントを既定フォントとして登録・固定し、環境依存フォント参照を防止
             doc.registerFont('jp', japaneseFontPath);
             doc.font('jp');
-            doc.info.Title = 'Divizero契約書ドラフト';
+            doc.info.Title = 'Divizero契約書';
             doc.info.Author = 'Divizero';
-            doc.info.Subject = 'パートナーシップ契約書ドラフト';
+            doc.info.Subject = 'パートナーシップ契約書';
             doc.info.Keywords = 'Divizero,契約書,パートナーシップ';
 
             // --- PDFのデザイン・中身の書き込み ---
             doc.rect(50, 45, 500, 3).fill('#b88a1d');
             doc.fillColor('#111111');
-            doc.fontSize(21).text('Divizero パートナーシップ契約書（ドラフト）', { align: 'center' });
+            doc.fontSize(21).text('Divizero パートナーシップ契約書', { align: 'center' });
             doc.moveDown(0.7);
             doc.fontSize(10).fillColor('#4f4f4f').text(`作成日: ${new Date().toLocaleDateString('ja-JP')}`, { align: 'right' });
             doc.fillColor('#111111');
@@ -204,7 +204,7 @@ export default async function handler(req, res) {
             doc.text(`・口座番号: ${bankNumber}`);
             doc.text(`・口座名義: ${bankAccountName}`);
             doc.moveDown(1.5);
-            doc.fontSize(10).fillColor('#5a5a5a').text('本書はドラフトです。正式契約はGMOサインにより電子締結します。', { align: 'center' });
+            doc.fontSize(10).fillColor('#5a5a5a').text('本契約はGMOサインにより電子締結します。', { align: 'center' });
             
             doc.end();
         });
