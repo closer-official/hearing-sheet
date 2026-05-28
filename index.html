@@ -423,7 +423,7 @@
 
         <div class="form-group">
             <label for="base_price_input">制作単価の目安（基本設定） <span class="required">*</span></label>
-            <input type="number" id="base_price_input" required min="0" placeholder="100000" oninput="syncInputToSlider(this.value)">
+            <input type="number" id="base_price_input" required min="0" placeholder="100000">
         </div>
 
         <div class="form-group">
@@ -443,87 +443,54 @@
             <textarea id="avoid_client" required placeholder="例：過度な相見積もり、リスペクトのない値引き要求をされるクライアント"></textarea>
         </div>
 
-        <div class="section-title">料金プラン設定 ＆ 収支シミュレーター</div>
+        <div class="section-title">料金プラン設定 ＆ 収支シミュレーター（商材別）</div>
         
         <div class="simulator-box">
-            
-            <div class="slider-container">
-                <div class="slider-header">
-                    <span class="slider-title">制作単価の目安（シミュレーション連動）</span>
-                    <span id="val_price" class="slider-value">100,000円</span>
-                </div>
-                <input type="range" id="param_price" min="10000" max="500000" step="5000" value="100000" oninput="updateSimulator('slider')">
+            <div class="form-group">
+                <label for="contract_id">契約書番号（自動採番）</label>
+                <input type="text" id="contract_id" readonly>
             </div>
-
-            <div class="slider-container">
-                <div class="slider-header">
-                    <span class="slider-title">アポ単価設定</span>
-                    <span id="val_apo_fee" class="slider-value">2,000円</span>
-                </div>
-                <input type="range" id="param_apo_fee" min="0" max="30000" step="500" value="2000" oninput="updateSimulator()">
+            <div id="productList"></div>
+            <div class="btn-container" style="margin-top: 10px;">
+                <button type="button" class="btn-secondary" onclick="addProduct()">+ 商材を追加する</button>
             </div>
-
-            <div class="slider-container">
-                <div class="slider-header">
-                    <span class="slider-title">成約コミッション率</span>
-                    <span id="val_com_rate" class="slider-value">10%</span>
-                </div>
-                <input type="range" id="param_com_rate" min="0" max="50" step="1" value="10" oninput="updateSimulator()">
-            </div>
-
-            <div class="slider-container">
-                <div class="slider-header">
-                    <span class="slider-title">月間アポ件数</span>
-                    <span id="val_apo_count" class="slider-value">10件</span>
-                </div>
-                <input type="range" id="param_apo_count" min="1" max="100" step="1" value="10" oninput="updateSimulator()">
-            </div>
-
-            <div class="slider-container">
-                <div class="slider-header">
-                    <span class="slider-title">成約率</span>
-                    <span id="val_close_rate" class="slider-value">30%</span>
-                </div>
-                <input type="range" id="param_close_rate" min="0" max="100" step="5" value="30" oninput="updateSimulator()">
-            </div>
-
             <div id="validationNotice" class="validation-notice">
-                ⚠️ 【設定エラー】「アポ単価 ＋ 1件あたりの成約コミッション金額」の合計が 5,000円 未満となるプラン設計では、次に進む（送信する）ことができません。数値を調整してください。
+                ⚠️ 【設定エラー】商材の中に「アポ単価 ＋ 1件あたりの成約コミッション金額」が 5,000円 未満のものがあります。数値を調整してください。
             </div>
             <div id="validationSuccess" class="validation-success">
-                ✅ 最低手数料基準（合計5,000円以上）をクリアしています。
+                ✅ 全商材が最低手数料基準（合計5,000円以上）をクリアしています。
             </div>
 
             <div class="results-panel">
-                <div class="results-title">収支シミュレーション結果</div>
+                <div class="results-title">全商材合算シミュレーション</div>
                 
                 <div class="result-row">
-                    <span class="result-label">成約件数 (自動計算)</span>
-                    <span id="res_close_count" class="result-val">3 件</span>
+                    <span class="result-label">成約件数（合計）</span>
+                    <span id="res_close_count" class="result-val">0 件</span>
                 </div>
 
                 <div class="result-row">
-                    <span class="result-label">アポ収入 (総売上ベース)</span>
-                    <span id="res_apo_revenue" class="result-val">¥20,000</span>
+                    <span class="result-label">アポ収入（乙受取）</span>
+                    <span id="res_apo_revenue" class="result-val">¥0</span>
                 </div>
 
                 <div class="result-row">
-                    <span class="result-label">成約コミッション (Divizero受取分)</span>
-                    <span id="res_com_revenue" class="result-val">¥30,000</span>
+                    <span class="result-label">成約コミッション（乙受取）</span>
+                    <span id="res_com_revenue" class="result-val">¥0</span>
                 </div>
 
                 <div class="result-row">
-                    <span class="result-label">月間合計収入 (Divizero受取分総額)</span>
-                    <span id="res_divizero_total" class="result-val minus" style="font-weight: bold; color: var(--error-color);">¥50,000</span>
+                    <span class="result-label">月間合計収入（乙受取総額）</span>
+                    <span id="res_divizero_total" class="result-val minus" style="font-weight: bold; color: var(--error-color);">¥0</span>
                 </div>
 
                 <div class="result-row" style="margin-top: 8px; padding-top: 14px; border-top: 1px dashed var(--border-color);">
-                    <span class="result-label" style="color: var(--accent-gold); font-weight: bold;">クライアント手残り (実質利益)</span>
-                    <span id="res_client_remains" class="result-val highlight">¥250,000</span>
+                    <span class="result-label" style="color: var(--accent-gold); font-weight: bold;">甲の手残り（合算）</span>
+                    <span id="res_client_remains" class="result-val highlight">¥0</span>
                 </div>
                 
                 <p class="note-text">
-                    ※ 成約率はクライアント（制作者）の対応・提案力によって決まるものであり、Divizeroが保証するものではありません。Divizeroの役割は見込み客をクライアントのDMへお連れするところまでです。
+                    ※ 本シミュレーションは参考値です。成果保証は行わず、契約条項の免責規定が優先されます。
                 </p>
             </div>
         </div>
@@ -555,9 +522,30 @@
             </div>
         </div>
 
-        <div class="section-title">Section 3｜不正成約の罰則規定</div>
+        <div class="section-title">契約条項の詳細設定</div>
+        <div class="form-group">
+            <label for="liability_cap_months">損害賠償上限の対象期間（月数） <span class="required">*</span></label>
+            <input type="number" id="liability_cap_months" required min="1" value="3">
+        </div>
+        <div class="form-group">
+            <label for="auto_renew_notice_days">自動更新を停止する申出期限（日数） <span class="required">*</span></label>
+            <input type="number" id="auto_renew_notice_days" required min="1" value="7">
+        </div>
+        <div class="form-group">
+            <label for="cancel_notice_days">中途解約の通知期限（日数または「いつでも」） <span class="required">*</span></label>
+            <input type="text" id="cancel_notice_days" required value="いつでも">
+        </div>
+        <div class="form-group">
+            <label for="jurisdiction">専属的合意管轄裁判所 <span class="required">*</span></label>
+            <input type="text" id="jurisdiction" required value="乙の所在地を管轄する地方裁判所（または簡易裁判所）">
+        </div>
+
+        <div class="section-title">Section 3｜不正成約の罰則規定・免責</div>
         <div style="background-color: rgba(255, 77, 77, 0.03); border: 1px solid #331515; padding: 20px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: #e6aaaa; line-height: 1.6;">
-            万が一、成約が発生したにもかかわらず成約していないと虚偽の申告をされた場合、発覚時点での設定成約コミッション単価の10倍をDivizeroへお支払いいただきます。本規定はプラン合意時点で効力が生じます。
+            ・不正成約の虚偽申告が判明した場合、設定成約コミッション単価の10倍を乙へ支払うものとします。<br>
+            ・甲乙は反社会的勢力に該当せず、将来にわたり関係を持たないことを表明保証します。<br>
+            ・中途解約は通知により可能であり、解約金・違約金は発生しません。<br>
+            ・乙は成果保証を行わず、損害賠償責任は契約で定める上限額を超えません。
         </div>
 
         <div class="form-group">
@@ -578,63 +566,100 @@
 </div>
 
 <script>
-    // 制作単価入力欄とシミュレータースライダーの完全同期
-    function syncInputToSlider(val) {
-        let num = parseInt(val);
-        if(!isNaN(num)) {
-            document.getElementById('param_price').value = num;
-            updateSimulator('input');
-        }
+    function toNum(value, fallback = 0) {
+        const n = Number(value);
+        return Number.isFinite(n) ? n : fallback;
     }
 
-    function updateSimulator(trigger) {
-        const price = parseInt(document.getElementById('param_price').value);
-        const apoFee = parseInt(document.getElementById('param_apo_fee').value);
-        const comRate = parseInt(document.getElementById('param_com_rate').value) / 100;
-        const apoCount = parseInt(document.getElementById('param_apo_count').value);
-        const closeRate = parseInt(document.getElementById('param_close_rate').value) / 100;
+    function createContractId() {
+        const now = new Date();
+        const pad = (v) => String(v).padStart(2, '0');
+        return `DVZ-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+    }
 
-        // 入力フォーム側の数値を同期
-        if (trigger !== 'input') {
-            document.getElementById('base_price_input').value = price;
-        }
+    function productTemplate(index, defaultPrice = 100000) {
+        return `
+            <div class="results-panel product-card" data-index="${index}" style="margin-top: 0; margin-bottom: 16px;">
+                <div class="form-group">
+                    <label>商材名 <span class="required">*</span></label>
+                    <input type="text" class="product-name" value="商材${index + 1}" required oninput="updateSimulator()">
+                </div>
+                <div class="slider-container">
+                    <div class="slider-header"><span class="slider-title">制作単価</span><span class="slider-value product-price-label">${Number(defaultPrice).toLocaleString()}円</span></div>
+                    <input type="range" class="product-price" min="10000" max="500000" step="5000" value="${defaultPrice}" oninput="updateSimulator()">
+                </div>
+                <div class="slider-container">
+                    <div class="slider-header"><span class="slider-title">アポ単価</span><span class="slider-value product-apo-label">2,000円</span></div>
+                    <input type="range" class="product-apo" min="0" max="30000" step="500" value="2000" oninput="updateSimulator()">
+                </div>
+                <div class="slider-container">
+                    <div class="slider-header"><span class="slider-title">成約コミッション率</span><span class="slider-value product-com-label">10%</span></div>
+                    <input type="range" class="product-com" min="0" max="50" step="1" value="10" oninput="updateSimulator()">
+                </div>
+                <div class="slider-container">
+                    <div class="slider-header"><span class="slider-title">月間アポ件数</span><span class="slider-value product-apo-count-label">10件</span></div>
+                    <input type="range" class="product-apo-count" min="1" max="100" step="1" value="10" oninput="updateSimulator()">
+                </div>
+                <div class="slider-container" style="margin-bottom: 0;">
+                    <div class="slider-header"><span class="slider-title">成約率</span><span class="slider-value product-close-label">30%</span></div>
+                    <input type="range" class="product-close" min="0" max="100" step="5" value="30" oninput="updateSimulator()">
+                </div>
+            </div>
+        `;
+    }
 
-        // 「対応可能な案件数」と「成約率」から月間アポ件数の上限（max）を動的に計算
-        const maxCasesInput = parseInt(document.getElementById('max_cases').value) || 1;
-        const apoSlider = document.getElementById('param_apo_count');
-        
-        if (closeRate > 0) {
-            // 例: 5件 ÷ 20% (0.2) = 25件
-            const calculatedMaxApo = Math.ceil(maxCasesInput / closeRate);
-            apoSlider.max = calculatedMaxApo;
-        } else {
-            apoSlider.max = 100; // 成約率0%の時は安全のため上限100
-        }
+    function addProduct() {
+        const list = document.getElementById('productList');
+        const index = list.querySelectorAll('.product-card').length;
+        const basePrice = toNum(document.getElementById('base_price_input').value, 100000);
+        list.insertAdjacentHTML('beforeend', productTemplate(index, basePrice));
+        updateSimulator();
+    }
 
-        // スライダーの値が新しく設定された最大値を超えてしまっていたら、最大値に強制補正
-        if (parseInt(apoSlider.value) > parseInt(apoSlider.max)) {
-            apoSlider.value = apoSlider.max;
-        }
-        
-        // 補正後の正確なアポ数を再取得
-        const finalApoCount = parseInt(apoSlider.value);
+    function getProductsFromUI() {
+        return Array.from(document.querySelectorAll('.product-card')).map((card, index) => {
+            const product = {
+                name: card.querySelector('.product-name').value || `商材${index + 1}`,
+                price: toNum(card.querySelector('.product-price').value),
+                apo_fee: toNum(card.querySelector('.product-apo').value),
+                com_rate: toNum(card.querySelector('.product-com').value),
+                apo_count: toNum(card.querySelector('.product-apo-count').value, 1),
+                close_rate: toNum(card.querySelector('.product-close').value),
+            };
+            card.querySelector('.product-price-label').innerText = `${product.price.toLocaleString()}円`;
+            card.querySelector('.product-apo-label').innerText = `${product.apo_fee.toLocaleString()}円`;
+            card.querySelector('.product-com-label').innerText = `${product.com_rate}%`;
+            card.querySelector('.product-apo-count-label').innerText = `${product.apo_count}件`;
+            card.querySelector('.product-close-label').innerText = `${product.close_rate}%`;
+            return product;
+        });
+    }
 
-        // 表示ラベルの更新（動的な最大値もカッコ内に表示させて親切にしています）
-        document.getElementById('val_price').innerText = price.toLocaleString() + '円';
-        document.getElementById('val_apo_fee').innerText = apoFee.toLocaleString() + '円';
-        document.getElementById('val_com_rate').innerText = (comRate * 100).toFixed(0) + '%';
-        document.getElementById('val_apo_count').innerText = finalApoCount + '件' + ` (上限 ${apoSlider.max}件)`;
-        document.getElementById('val_close_rate').innerText = (closeRate * 100).toFixed(0) + '%';
-
-        // 判定ロジック: アポ単価 ＋ 1件あたりの成約報酬
-        const singleComFee = price * comRate; 
-        const feePerCase = apoFee + singleComFee;
-
+    function updateSimulator() {
+        const products = getProductsFromUI();
         const submitBtn = document.getElementById('submitBtn');
         const notice = document.getElementById('validationNotice');
         const success = document.getElementById('validationSuccess');
+        let hasInvalidPlan = false;
 
-        if (feePerCase < 5000) {
+        let totalCloseCount = 0;
+        let totalApoRevenue = 0;
+        let totalComRevenue = 0;
+        let totalSales = 0;
+
+        products.forEach((product) => {
+            const singleComFee = product.price * (product.com_rate / 100);
+            const feePerCase = product.apo_fee + singleComFee;
+            if (feePerCase < 5000) hasInvalidPlan = true;
+
+            const closeCount = product.apo_count * (product.close_rate / 100);
+            totalCloseCount += closeCount;
+            totalApoRevenue += product.apo_fee * product.apo_count;
+            totalComRevenue += singleComFee * closeCount;
+            totalSales += product.price * closeCount;
+        });
+
+        if (hasInvalidPlan) {
             notice.style.display = 'block';
             success.style.display = 'none';
             submitBtn.disabled = true;
@@ -644,35 +669,21 @@
             submitBtn.disabled = false;
         }
 
-        // 収支の精密計算
-        const closeCount = apoCount * closeRate; // 成約件数
-        const apoRevenue = apoFee * apoCount; // アポ総報酬
-        const comRevenue = singleComFee * closeCount; // コミッション総報酬
-        
-        const divizeroTotal = apoRevenue + comRevenue; // Divizero受取総額
-        const totalSales = price * closeCount; // 総売上高
-        const clientRemains = totalSales - divizeroTotal; // クライアント手残り
-
-        // 画面へのレンダリング
-        document.getElementById('res_close_count').innerText = `${apoCount} × ${(closeRate * 100).toFixed(0)}% = ${closeCount.toFixed(1)} 件`;
-        document.getElementById('res_apo_revenue').innerText = '¥' + Math.round(apoRevenue).toLocaleString();
-        document.getElementById('res_com_revenue').innerText = '¥' + Math.round(comRevenue).toLocaleString();
+        const divizeroTotal = totalApoRevenue + totalComRevenue;
+        const clientRemains = totalSales - divizeroTotal;
+        document.getElementById('res_close_count').innerText = `${totalCloseCount.toFixed(1)} 件`;
+        document.getElementById('res_apo_revenue').innerText = '¥' + Math.round(totalApoRevenue).toLocaleString();
+        document.getElementById('res_com_revenue').innerText = '¥' + Math.round(totalComRevenue).toLocaleString();
         document.getElementById('res_divizero_total').innerText = '¥' + Math.round(divizeroTotal).toLocaleString();
         document.getElementById('res_client_remains').innerText = '¥' + Math.round(clientRemains).toLocaleString();
     }
 
     function copyPlanToClipboard() {
-        const price = document.getElementById('param_price').value;
-        const apoFee = document.getElementById('param_apo_fee').value;
-        const comRate = document.getElementById('param_com_rate').value;
-        
-        const text = `【Divizero 策定プラン構成】\n■ 制作単価目安: ¥${parseInt(price).toLocaleString()}\n■ 希望アポ単価: ¥${parseInt(apoFee).toLocaleString()}\n■ 希望成約コミッション率: ${comRate}%`;
-        
-        navigator.clipboard.writeText(text).then(() => {
-            alert('プラン構成をクリップボードにコピーしました。');
-        }).catch(() => {
-            alert('コピーに失敗しました。');
-        });
+        const contractId = document.getElementById('contract_id').value;
+        const products = getProductsFromUI();
+        const productLines = products.map((product, i) => `■ 商材${i + 1}(${product.name}): 単価¥${product.price.toLocaleString()} / アポ単価¥${product.apo_fee.toLocaleString()} / コミッション${product.com_rate}% / 月間アポ${product.apo_count}件 / 成約率${product.close_rate}%`);
+        const text = `【Divizero 策定プラン構成】\n契約ID: ${contractId}\n${productLines.join('\n')}`;
+        navigator.clipboard.writeText(text).then(() => alert('プラン構成をクリップボードにコピーしました。')).catch(() => alert('コピーに失敗しました。'));
     }
 
     async function handleSubmit(event) {
@@ -682,8 +693,9 @@
         submitBtn.disabled = true;
         submitBtn.innerText = '送信中...';
 
-        // フォーム内のデータを収集
+        const products = getProductsFromUI();
         const formData = {
+            contract_id: document.getElementById('contract_id').value,
             name: document.getElementById('name').value,
             email: document.getElementById('email').value,
             insta_url: document.getElementById('insta_url').value,
@@ -691,13 +703,16 @@
             max_cases: document.getElementById('max_cases').value,
             ideal_client: document.getElementById('ideal_client').value,
             avoid_client: document.getElementById('avoid_client').value,
-            // シミュレーターの値
-            price: document.getElementById('param_price').value,
-            apo_fee: document.getElementById('param_apo_fee').value,
-            com_rate: document.getElementById('param_com_rate').value,
-            apo_count: document.getElementById('param_apo_count').value,
-            close_rate: document.getElementById('param_close_rate').value,
-            // ラジオボタンの取得
+            products,
+            price: products[0]?.price || 0,
+            apo_fee: products[0]?.apo_fee || 0,
+            com_rate: products[0]?.com_rate || 0,
+            apo_count: products[0]?.apo_count || 0,
+            close_rate: products[0]?.close_rate || 0,
+            liability_cap_months: document.getElementById('liability_cap_months').value,
+            auto_renew_notice_days: document.getElementById('auto_renew_notice_days').value,
+            cancel_notice_days: document.getElementById('cancel_notice_days').value,
+            jurisdiction: document.getElementById('jurisdiction').value,
             payment_timing: document.querySelector('input[name="payment_timing"]:checked').value,
             divizero_timing: document.querySelector('input[name="divizero_timing"]:checked').value
         };
@@ -713,6 +728,9 @@
             if (response.ok) {
                 alert('ヒアリングシートの送信、および契約書ドラフトの自動生成が完了しました！運営からの連絡をお待ちください。');
                 document.getElementById('hearingForm').reset();
+                document.getElementById('productList').innerHTML = '';
+                addProduct();
+                document.getElementById('contract_id').value = createContractId();
                 updateSimulator();
             } else {
                 alert('送信に失敗しました。時間をおいて再度お試しください。');
@@ -727,6 +745,16 @@
     }
 
     window.onload = function() {
+        document.getElementById('contract_id').value = createContractId();
+        document.getElementById('base_price_input').value = 100000;
+        document.getElementById('base_price_input').addEventListener('input', () => {
+            const firstProduct = document.querySelector('.product-card');
+            if (!firstProduct) return;
+            const nextPrice = toNum(document.getElementById('base_price_input').value, 100000);
+            firstProduct.querySelector('.product-price').value = nextPrice;
+            updateSimulator();
+        });
+        addProduct();
         updateSimulator();
     };
 </script>
