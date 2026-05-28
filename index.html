@@ -648,10 +648,6 @@
         <div class="section-title">料金プラン設定 ＆ 収支シミュレーター（商材別）</div>
         
         <div class="simulator-box">
-            <div class="form-group">
-                <label for="contract_id">契約書番号（自動採番）</label>
-                <input type="text" id="contract_id" readonly>
-            </div>
             <div id="productList"></div>
             <div class="btn-container" style="margin-top: 10px;">
                 <button type="button" class="btn-secondary" onclick="addProduct()">+ 商材を追加する</button>
@@ -698,12 +694,8 @@
         </div>
 
         <div class="form-group">
-            <div class="checkbox-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="agree_plan" required>
-                    <span>このプランは毎月変更可能であることに同意します（必須）</span>
-                </label>
-            </div>
+            <label>プラン変更ルール</label>
+            <input type="text" value="変更可能です" readonly>
         </div>
 
         <div class="form-group">
@@ -722,24 +714,6 @@
                 <label class="radio-label"><input type="radio" name="divizero_timing" value="20日締め同月末支払い"> 20日締め同月末支払い</label>
                 <label class="radio-label"><input type="radio" name="divizero_timing" value="月末締め翌月10日支払い"> 月末締め翌月10日支払い</label>
             </div>
-        </div>
-
-        <div class="section-title">契約条項の詳細設定</div>
-        <div class="form-group">
-            <label for="liability_cap_months">損害賠償上限の対象期間（月数） <span class="required">*</span></label>
-            <input type="number" id="liability_cap_months" required min="1" value="3">
-        </div>
-        <div class="form-group">
-            <label for="auto_renew_notice_days">自動更新を停止する申出期限（日数） <span class="required">*</span></label>
-            <input type="number" id="auto_renew_notice_days" required min="1" value="7">
-        </div>
-        <div class="form-group">
-            <label for="cancel_notice_days">中途解約の通知期限（日数または「いつでも」） <span class="required">*</span></label>
-            <input type="text" id="cancel_notice_days" required value="7">
-        </div>
-        <div class="form-group">
-            <label for="jurisdiction">専属的合意管轄裁判所 <span class="required">*</span></label>
-            <input type="text" id="jurisdiction" required value="乙の所在地を管轄する地方裁判所（または簡易裁判所）">
         </div>
 
         <div class="section-title">Section 3｜不正成約の罰則規定・免責</div>
@@ -771,12 +745,6 @@
     function toNum(value, fallback = 0) {
         const n = Number(value);
         return Number.isFinite(n) ? n : fallback;
-    }
-
-    function createContractId() {
-        const now = new Date();
-        const pad = (v) => String(v).padStart(2, '0');
-        return `DVZ-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
     }
 
     function productTemplate(index, defaultPrice = 100000) {
@@ -881,10 +849,9 @@
     }
 
     function copyPlanToClipboard() {
-        const contractId = document.getElementById('contract_id').value;
         const products = getProductsFromUI();
         const productLines = products.map((product, i) => `■ 商材${i + 1}(${product.name}): 単価¥${product.price.toLocaleString()} / アポ単価¥${product.apo_fee.toLocaleString()} / コミッション${product.com_rate}% / 月間アポ${product.apo_count}件 / 成約率${product.close_rate}%`);
-        const text = `【Divizero 策定プラン構成】\n契約ID: ${contractId}\n${productLines.join('\n')}`;
+        const text = `【Divizero 策定プラン構成】\n${productLines.join('\n')}`;
         navigator.clipboard.writeText(text).then(() => alert('プラン構成をクリップボードにコピーしました。')).catch(() => alert('コピーに失敗しました。'));
     }
 
@@ -897,7 +864,6 @@
 
         const products = getProductsFromUI();
         const formData = {
-            contract_id: document.getElementById('contract_id').value,
             name: document.getElementById('name').value,
             email: document.getElementById('email').value,
             insta_url: document.getElementById('insta_url').value,
@@ -911,10 +877,6 @@
             com_rate: products[0]?.com_rate || 0,
             apo_count: products[0]?.apo_count || 0,
             close_rate: products[0]?.close_rate || 0,
-            liability_cap_months: document.getElementById('liability_cap_months').value,
-            auto_renew_notice_days: document.getElementById('auto_renew_notice_days').value,
-            cancel_notice_days: document.getElementById('cancel_notice_days').value,
-            jurisdiction: document.getElementById('jurisdiction').value,
             payment_timing: document.querySelector('input[name="payment_timing"]:checked').value,
             divizero_timing: document.querySelector('input[name="divizero_timing"]:checked').value
         };
@@ -932,7 +894,6 @@
                 document.getElementById('hearingForm').reset();
                 document.getElementById('productList').innerHTML = '';
                 addProduct();
-                document.getElementById('contract_id').value = createContractId();
                 updateSimulator();
             } else {
                 alert('送信に失敗しました。時間をおいて再度お試しください。');
@@ -947,7 +908,6 @@
     }
 
     window.onload = function() {
-        document.getElementById('contract_id').value = createContractId();
         document.getElementById('base_price_input').value = 100000;
         document.getElementById('base_price_input').addEventListener('input', () => {
             const firstProduct = document.querySelector('.product-card');

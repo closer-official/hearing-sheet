@@ -13,12 +13,6 @@ function toNumber(value, fallback = 0) {
     return Number.isFinite(n) ? n : fallback;
 }
 
-function createContractId() {
-    const now = new Date();
-    const pad = (v) => String(v).padStart(2, '0');
-    return `DVZ-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
-}
-
 function normalizeProducts(products, fallback) {
     if (!Array.isArray(products) || products.length === 0) {
         return [fallback];
@@ -59,11 +53,10 @@ export default async function handler(req, res) {
 
     try {
         const data = req.body || {};
-        const contractId = safeText(data.contract_id, createContractId());
-        const liabilityCapMonths = safeText(data.liability_cap_months, '3');
-        const autoRenewNoticeDays = safeText(data.auto_renew_notice_days, '7');
-        const cancelNoticeDays = safeText(data.cancel_notice_days, '7');
-        const jurisdiction = safeText(data.jurisdiction, '乙の所在地を管轄する地方裁判所（または簡易裁判所）');
+        const liabilityCapMonths = '3';
+        const autoRenewNoticeDays = '7';
+        const cancelNoticeDays = '7';
+        const jurisdiction = '乙の所在地を管轄する地方裁判所（または簡易裁判所）';
         const products = normalizeProducts(data.products, {
             name: safeText(data.product_name, 'メイン商材'),
             price: toNumber(data.price),
@@ -88,22 +81,19 @@ export default async function handler(req, res) {
                 const emailResponse = await resend.emails.send({
                     from: 'Divizero System <onboarding@resend.dev>',
                     to: 'info@closer-official.com',
-                    subject: `【要対応】契約書発行依頼_${safeText(data.name)}様_${contractId}`,
+                    subject: `【要対応】契約書発行依頼_${safeText(data.name)}様`,
                     html: `
                         <h2>Divizero パートナーシップ申請届</h2>
-                        <p><strong>契約書番号:</strong> ${contractId}</p>
                         <p>ヒアリングシートより新しい送信がありました。内容を確認し、GMOサインにて署名手続きを進めてください。</p>
                         <hr />
                         <p><strong>お名前:</strong> ${safeText(data.name)}</p>
-                        <p><strong>メールアドレス:</strong> ${safeText(data.email)}</p>
-                        <p><strong>インスタURL:</strong> ${safeText(data.insta_url)}</p>
                         <p><strong>商材数:</strong> ${products.length}件</p>
                         <hr />
                         <p>※詳細な回答内容は添付のPDF契約書（ドラフト）をご確認ください。</p>
                     `,
                     attachments: [
                         {
-                            filename: `Agreement_${contractId}_${safeText(data.name)}.pdf`,
+                            filename: `Agreement_${safeText(data.name)}.pdf`,
                             content: pdfBuffer.toString('base64'),
                         }
                     ]
@@ -116,7 +106,7 @@ export default async function handler(req, res) {
             // 同梱フォントを既定フォントとして登録・固定し、環境依存フォント参照を防止
             doc.registerFont('jp', japaneseFontPath);
             doc.font('jp');
-            doc.info.Title = `Divizero契約書ドラフト_${contractId}`;
+            doc.info.Title = 'Divizero契約書ドラフト';
             doc.info.Author = 'Divizero';
             doc.info.Subject = 'パートナーシップ契約書ドラフト';
             doc.info.Keywords = 'Divizero,契約書,パートナーシップ';
@@ -124,7 +114,6 @@ export default async function handler(req, res) {
             // --- PDFのデザイン・中身の書き込み ---
             doc.rect(50, 45, 500, 3).fill('#b88a1d');
             doc.fillColor('#111111');
-            doc.fontSize(11).text(`契約書番号: ${contractId}`, 50, 58, { align: 'right' });
             doc.fontSize(21).text('Divizero パートナーシップ契約書（ドラフト）', { align: 'center' });
             doc.moveDown(0.7);
             doc.fontSize(10).fillColor('#4f4f4f').text(`作成日: ${new Date().toLocaleDateString('ja-JP')}`, { align: 'right' });
@@ -132,7 +121,6 @@ export default async function handler(req, res) {
             doc.moveDown(0.6);
             doc.fontSize(11).text(`申請者（甲）: ${safeText(data.name)} 様`);
             doc.text(`運営者（乙）: Divizero 運営代表`);
-            doc.text(`連絡先: ${safeText(data.email)} / ${safeText(data.insta_url)}`);
             doc.moveDown(0.5);
             doc.moveTo(50, doc.y).lineTo(545, doc.y).strokeColor('#d0d0d0').stroke();
             doc.moveDown(1);
