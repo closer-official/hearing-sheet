@@ -1,9 +1,12 @@
 // api/send.js
 import { Resend } from 'resend';
 import PDFDocument from 'pdfkit';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 // Vercel上の環境変数からResendのAPIキーを読み込みます
 const resend = new Resend(process.env.RESEND_API_KEY);
+const JAPANESE_FONT_PATH = fileURLToPath(new URL('../fonts/NotoSansCJKjp-Regular.otf', import.meta.url));
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -50,9 +53,12 @@ export default async function handler(req, res) {
                 resolve();
             });
 
-            // --- 【完全文字化け対策】外部ファイルを使用せず、標準内蔵の日本語用CJKフォントを指定 ---
-            // これにより、Unknown font formatエラーの発生を論理的に100%防ぎます。
-            doc.font('HeiseiKakuGo-W5');
+            if (!existsSync(JAPANESE_FONT_PATH)) {
+                throw new Error(`Japanese font file not found: ${JAPANESE_FONT_PATH}`);
+            }
+
+            // 同梱フォントを明示的に指定して日本語の文字化けを防止
+            doc.font(JAPANESE_FONT_PATH);
 
             // --- PDFのデザイン・中身の書き込み ---
             doc.fontSize(16).text('Divizero パートナーシッププラン合意書 (ドラフト)', { align: 'center' });
