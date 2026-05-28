@@ -77,21 +77,57 @@ export default async function handler(req, res) {
             doc.on('end', async () => {
                 const pdfBuffer = Buffer.concat(buffers);
 
-                // 2. Resend APIを使って「Divizero運営代表メール」へ送信
+                // 2. Resend APIを使って「Divizero運営代表メール」へ送信（全回答内容を網羅）
+                const productHtmlLines = products.map((product, idx) => `
+                    <div style="background-color: #1b1b1b; padding: 12px; margin-bottom: 10px; border-left: 4px solid #b88a1d; color: #ececec;">
+                        <strong>【商材${idx + 1}】${safeText(product.name)}</strong><br />
+                        ・制作単価目安: ${product.price.toLocaleString()} 円<br />
+                        ・アポ単価: ${product.apo_fee.toLocaleString()} 円<br />
+                        ・成約コミッション率: ${product.com_rate} %<br />
+                        ・月間アポ件数: ${product.apo_count} 件<br />
+                        ・成約率: ${product.close_rate} %
+                    </div>
+                `).join('');
+
                 const emailResponse = await resend.emails.send({
                     from: 'Divizero System <onboarding@resend.dev>',
                     to: 'info@closer-official.com',
                     subject: `【要対応】契約書発行依頼_${safeText(data.name)}様`,
                     html: `
-                        <h2>Divizero パートナーシップ申請届</h2>
-                        <p>ヒアリングシートより新しい送信がありました。内容を確認し、GMOサインにて署名手続きを進めてください。</p>
-                        <hr />
-                        <p><strong>お名前:</strong> ${safeText(data.name)}</p>
-                        <p><strong>メールアドレス:</strong> ${safeText(data.email)}</p>
-                        <p><strong>Instagramアカウント / URL:</strong> ${safeText(data.instagram)}</p>
-                        <p><strong>商材数:</strong> ${products.length}件</p>
-                        <hr />
-                        <p>※詳細な回答内容は添付のPDF契約書をご確認ください。</p>
+                        <div style="font-family: 'Helvetica Neue', Arial, sans-serif; color: #333333; line-height: 1.6; max-width: 600px; margin: 0 auto;">
+                            <h2 style="color: #b88a1d; border-bottom: 2px solid #b88a1d; padding-bottom: 8px;">Divizero パートナーシップ申請届（全回答内訳）</h2>
+                            <p>ヒアリングシートより新しい送信がありました。内容を確認し、GMOサインにて署名手続きを進めてください。</p>
+                            
+                            <h3 style="color: #b88a1d; margin-top: 20px;">■ 基本情報</h3>
+                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                <tr><td style="width: 35%; padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold;">お名前:</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${safeText(data.name)}</td></tr>
+                                <tr><td style="padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold;">メールアドレス:</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${safeText(data.email)}</td></tr>
+                                <tr><td style="padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold;">インスタURL:</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${safeText(data.insta_url || data.instagram)}</td></tr>
+                                <tr><td style="padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold;">得意ジャンル:</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${safeText(data.genre)}</td></tr>
+                                <tr><td style="padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold;">対応可能案件数/月:</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${toNumber(data.max_cases)} 件</td></tr>
+                            </table>
+
+                            <h3 style="color: #b88a1d; margin-top: 20px;">■ ターゲット設定</h3>
+                            <div style="background-color: #f9f9f9; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+                                <strong>理想のクライアント像:</strong><br />
+                                <p style="white-space: pre-wrap; margin: 4px 0 10px 0;">${safeText(data.ideal_client)}</p>
+                                <strong>避けたい案件・クライアント:</strong><br />
+                                <p style="white-space: pre-wrap; margin: 4px 0 0 0;">${safeText(data.avoid_client)}</p>
+                            </div>
+
+                            <h3 style="color: #b88a1d; margin-top: 20px;">■ 料金プラン・シミュレーション</h3>
+                            <p style="margin-bottom: 10px;"><strong>商材数:</strong> ${products.length}件</p>
+                            ${productHtmlLines}
+
+                            <h3 style="color: #b88a1d; margin-top: 20px;">■ 決済・精算サイクル</h3>
+                            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                                <tr><td style="width: 35%; padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold;">顧客からの受取時期:</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${safeText(data.payment_timing)}</td></tr>
+                                <tr><td style="padding: 6px; border-bottom: 1px solid #ddd; font-weight: bold;">Divizeroへの精算希望:</td><td style="padding: 6px; border-bottom: 1px solid #ddd;">${safeText(data.divizero_timing)}</td></tr>
+                            </table>
+
+                            <hr style="border: 0; border-top: 1px solid #b88a1d; margin-top: 30px;" />
+                            <p style="font-size: 11px; color: #666666;">※詳細および法的な合意内容は添付のPDF契約書をご確認ください。</p>
+                        </div>
                     `,
                     attachments: [
                         {
