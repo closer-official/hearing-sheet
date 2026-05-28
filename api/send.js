@@ -1,12 +1,12 @@
 // api/send.js
 import { Resend } from 'resend';
 import PDFDocument from 'pdfkit';
+import path from 'path';
 
 // Vercel上の環境変数からResendのAPIキーを読み込みます
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
-    // POSTリクエスト以外は弾く
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
@@ -24,10 +24,9 @@ export default async function handler(req, res) {
                 const pdfBuffer = Buffer.concat(buffers);
 
                 // 2. Resend APIを使って「Divizero運営代表メール」へ送信
-                // ※宛先（to）は薫之介さんの受信可能なアドレスに書き換えてください
                 const emailResponse = await resend.emails.send({
-                    from: 'Divizero System <onboarding@resend.dev>', // 本番は独自ドメインに設定可能
-                    to: 'info@closer-official.com', // 👈ここに運営代表メールアドレスを入れてください
+                    from: 'Divizero System <onboarding@resend.dev>',
+                    to: 'info@closer-official.com',
                     subject: `【要対応】契約書発行依頼_${data.name}様`,
                     html: `
                         <h2>Divizero パートナーシップ申請届</h2>
@@ -52,52 +51,63 @@ export default async function handler(req, res) {
                 resolve();
             });
 
-            // --- PDFのデザイン・中身の書き込み ---
-            // Vercel標準環境で100%エラーを回避して日本語を出力する標準フォント
-            doc.font('Times-Roman'); // 英語の標準フォントをベースに設定
+            // --- 【確実な手段】プロジェクト内のフォントファイルを絶対パスで直接読み込む ---
+            // ※「fonts/NotoSansJP-Regular.ttf」の部分は、ご自身が配置したフォントファイル名に書き換えてください
+            const fontPath = path.join(process.cwd(), 'fonts', 'NotoSansJP-Regular.ttf');
+            doc.font(fontPath);
 
-            doc.fontSize(20).text('Divizero パートナーシッププラン合意書 (ドラフト)', { align: 'center' });
+            // --- PDFのデザイン・中身の書き込み ---
+            doc.fontSize(18).text('Divizero パートナーシッププラン合意書 (ドラフト)', { align: 'center' });
             doc.moveDown();
-            doc.fontSize(11).text(`作成日: ${new Date().toLocaleDateString('ja-JP')}`);
+            doc.fontSize(10).text(`作成日: ${new Date().toLocaleDateString('ja-JP')}`);
             doc.text(`申請者（甲）: ${data.name} 様`);
             doc.text(`運営者（乙）: Divizero 運営代表`);
             doc.moveDown();
             doc.text('==================================================================');
             doc.moveDown();
-            doc.fontSize(13).text(`【合意されたプランパラメータ】`);
-            doc.fontSize(11).text(`・想定制作単価の目安: ${parseInt(data.price).toLocaleString()} 円`);
+            
+            doc.fontSize(12).text(`【合意されたプランパラメータ】`);
+            doc.fontSize(10).text(`・想定制作単価の目安: ${parseInt(data.price).toLocaleString()} 円`);
             doc.text(`--------- 希望アポ単価: ${parseInt(data.apo_fee).toLocaleString()} 円`);
             doc.text(`--------- 成約コミッション率: ${data.com_rate} %`);
             doc.text(`--------- 月間アポ件数: ${data.apo_count} 件`);
             doc.moveDown();
-            doc.fontSize(13).text(`【報酬受取・手数料精算サイクル】`);
-            doc.fontSize(11).text(`・甲の報酬受取タイミング: ${data.payment_timing}`);
+            
+            // ★新規追記：アポ確定条件の厳格な明文化
+            doc.fontSize(12).text(`【重要：アポ確定に関する判定基準】`);
+            doc.fontSize(9).text(`1. 事前のヒアリング内容に基づき、ターゲット条件（業種、ニーズ等）を網羅していること。`);
+            doc.text(`2. 甲（パートナー）のInstagramアカウント等の指定窓口へ見込み客が直接流入した時点を発生とする。`);
+            doc.text(`3. 流入後、明らかな冷やかしを除き、最初のヒアリング対話が1往復以上成立した時点をもってアポ確定（成果発生）と認定する。`);
+            doc.text(`※乙の役割は見込み客を甲のDMへお連れするところまでであり、その後の成約率は甲の提案力に依存します。`);
+            doc.moveDown();
+
+            doc.fontSize(12).text(`【報酬受取・手数料精算サイクル】`);
+            doc.fontSize(10).text(`・甲の報酬受取タイミング: ${data.payment_timing}`);
             doc.text(`・Divizeroへの精算サイクル: ${data.divizero_timing}`);
             
-            // 即時支払いが選ばれている場合、割引に関する特記をPDFに自動挿入
             if (data.divizero_timing.includes('即座に')) {
-                doc.fillColor('#e55039').text(`※特記事項: 即時精算合意につき、各手数料精算時に毎回200円の割引が適用されます。`).fillColor('#ffffff');
+                doc.fillColor('#e55039').text(`※特記事項: 即時精算合意につき、各手数料精算時に毎回200円の割引が適用されます。`).fillColor('#000000');
             }
             doc.moveDown();
 
-            // Vercelの環境変数から銀行情報を取得（登録がない場合のセーフティ付き）
             const bankName = process.env.BANK_NAME || '（未設定）';
             const bankBranch = process.env.BANK_BRANCH || '（未設定）';
             const bankType = process.env.BANK_ACCOUNT_TYPE || '普通';
             const bankNumber = process.env.BANK_ACCOUNT_NUMBER || '（未設定）';
             const bankAccountName = process.env.BANK_ACCOUNT_NAME || '（未設定）';
 
-            doc.fontSize(13).text(`【手数料のお振込先口座】`);
-            doc.fontSize(11).text(`・金融機関名: ${bankName}`);
+            doc.fontSize(12).text(`【手数料のお振込先口座】`);
+            doc.fontSize(10).text(`・金融機関名: ${bankName}`);
             doc.text(`・支店名: ${bankBranch}`);
             doc.text(`・預金種目: ${bankType}`);
             doc.text(`・口座番号: ${bankNumber}`);
             doc.text(`・口座名義: ${bankAccountName}`);
             doc.moveDown();
-            doc.fontSize(13).text(`【不正成約に関する罰則規定】`);
-            doc.fontSize(10).text(`万が一、成約が発生したにもかかわらず成約していないと虚偽の申告をされた場合、発覚時点での設定成約コミッション単価の10倍をDivizeroへお支払いいただきます。本規定はプラン合意時点で効力が生じます。`);
+            
+            doc.fontSize(12).text(`【不正成約に関する罰則規定】`);
+            doc.fontSize(9).text(`万が一、成約が発生したにもかかわらず成約していないと虚偽の申告をされた場合、発覚時点での設定成約コミッション単価の10倍をDivizeroへお支払いいただきます。本規定はプラン合意時点で効力が生じます。`);
             doc.moveDown(2);
-            doc.text('上記内容に基づき、乙から甲へGMOサインを通じて正式な電子契約書を締結します。', { color: 'gray' });
+            doc.fontSize(10).text('上記内容に基づき、乙から甲へGMOサインを通じて正式な電子契約書を締結します。', { color: 'gray' });
             
             doc.end();
         });
